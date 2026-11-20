@@ -66,3 +66,14 @@ venv.bak/
 # OS
 .DS_Store
 Thumbs.db
+
+# MS Office temp & lock files
+*.docx
+*.xlsx
+*.pptx
+~$*.docx
+~$*.xlsx
+~WRL*.tmp
+
+# Local PDF reports (keep code only)
+*.pdf
