@@ -3,7 +3,16 @@ LedgerPro Accountants - Lab API Entrypoint
 FastAPI core application with custom exception handling, security headers, and domain routes.
 """
 
+import sys
+from pathlib import Path
 from datetime import datetime, timezone
+
+# Ensure project root (task-01-lab-api-setup) is in sys.path regardless of execution working directory
+CURRENT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = CURRENT_DIR.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -139,3 +148,8 @@ def reset_database():
 app.include_router(clients_router, prefix=settings.api_prefix)
 app.include_router(invoices_router, prefix=settings.api_prefix)
 app.include_router(ledger_router, prefix=settings.api_prefix)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
