@@ -1,5 +1,5 @@
 """
-LedgerPro Accountants — Task 2: Auth & Token Schemas
+LedgerPro Accountants - Task 2: Auth & Token Schemas
 """
 
 from typing import Optional

@@ -1,5 +1,5 @@
 """
-LedgerPro Accountants — Task 2: JWT Token Engine
+LedgerPro Accountants - Task 2: JWT Token Engine
 Handles token creation, decoding, expiry validation, and signature verification.
 """
 
@@ -43,6 +43,6 @@ def decode_token(token: str) -> dict:
     - Tampered signature
     - Expired token (exp claim past)
     - Malformed structure
-    Does NOT raise on missing claims — callers must validate 'sub' and 'type'.
+    Does NOT raise on missing claims - callers must validate 'sub' and 'type'.
     """
     return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

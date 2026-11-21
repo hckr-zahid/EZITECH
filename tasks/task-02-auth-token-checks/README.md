@@ -9,13 +9,13 @@
 
 ## 1. Overview & Architecture
 
-Task 2 implements a robust, production-grade authentication and token validation layer for LedgerPro Accountants. Built on top of the financial domain logic established in Task 1, this task introduces:
+Task 2 adds authentication, token validation, and role-based access control to the LedgerPro Accountants API built in Task 1. This implementation includes:
 
-1. **State-of-the-Art Password Hashing**: Passwords are saved and verified using direct `bcrypt` key derivation with 12 rounds of salt. Plaintext passwords are never persisted.
-2. **RFC 7519 Compliant JSON Web Tokens (JWT)**: Cryptographically signed tokens utilizing `HS256`, containing subject identity, role claims, timestamp claims (`iat`, `exp`), unique token identifiers (`jti`), and strict token type declarations (`type: access` vs `type: refresh`).
-3. **Role-Based Access Control (RBAC)**: Hierarchical access governance granting tiered privileges across firm personnel (`admin` > `auditor` > `accountant` > `viewer`).
-4. **Token Lifecycle Management**: Short-lived access tokens (15 minutes) paired with longer-lived refresh tokens (8 hours).
-5. **Security Audit & Token Inspector**: Diagnostic inspection endpoints allowing security engineers to analyze token validity, claim payloads, signature status, and remaining time-to-live (TTL).
+1. **Password Hashing**: Passwords are hashed and verified using bcrypt with cost factor 12. No plaintext passwords are stored.
+2. **RFC 7519 JSON Web Tokens (JWT)**: Tokens signed with HS256 containing subject identity, role, timestamps (`iat`, `exp`), unique token identifiers (`jti`), and explicit token type declarations (`type: access` vs `type: refresh`).
+3. **Role-Based Access Control (RBAC)**: Hierarchical access control across four staff roles (`admin` > `auditor` > `accountant` > `viewer`).
+4. **Token Lifecycle**: 15-minute access tokens paired with 8-hour refresh tokens.
+5. **Token Inspection Endpoint**: A diagnostic endpoint to inspect token claims, signature status, and remaining time-to-live (TTL).
 
 ---
 

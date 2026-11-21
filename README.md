@@ -1,4 +1,4 @@
-# 🛡️ EZITECH Cybersecurity Internship — LedgerPro Accountants Security Review
+# 🛡️ EZITECH Cybersecurity Internship - LedgerPro Accountants Security Review
 
 [![Track](https://img.shields.io/badge/Track-Cyber%20Security%20(Advanced)-red.svg)](#intern-profile)
 [![Client](https://img.shields.io/badge/Client-LedgerPro%20Accountants-blue.svg)](#client-profile)
@@ -16,7 +16,7 @@ Production-grade API security evaluation and hardening portfolio for **LedgerPro
 * **Specialization**: Cyber Security (CEH v13, CHFI, ISC² CC)
 * **Organization**: Ezitech Software House
 * **Target System**: LedgerPro Accountants Core Accounting & Billing API
-* **Project Period**: 30 Days (20 Nov 2026 – 20 Dec 2026)
+* **Project Period**: 30 Days (20 Nov 2026 - 20 Dec 2026)
 
 ---
 

@@ -1,5 +1,5 @@
 """
-Task 2 Automated Test Suite — LedgerPro Accountants Auth & Token Checks
+Task 2 Automated Test Suite - LedgerPro Accountants Auth & Token Checks
 Covers:
   - Happy paths: login, refresh, /me, role-protected resources
   - Security failure paths: bad credentials, expired token, tampered token,
@@ -57,7 +57,7 @@ def test_auth_responses_not_cached():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 2. LOGIN — HAPPY PATHS
+# 2. LOGIN - HAPPY PATHS
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_admin_login_returns_tokens():
@@ -104,7 +104,7 @@ def test_refresh_token_type_claim_is_refresh():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 3. /ME — AUTHENTICATED PROFILE
+# 3. /ME - AUTHENTICATED PROFILE
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_me_returns_correct_profile():
@@ -119,7 +119,7 @@ def test_me_returns_correct_profile():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 4. TOKEN REFRESH — HAPPY PATH
+# 4. TOKEN REFRESH - HAPPY PATH
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_refresh_issues_new_access_token():
@@ -133,7 +133,7 @@ def test_refresh_issues_new_access_token():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 5. ROLE-BASED ACCESS CONTROL — HAPPY PATHS
+# 5. ROLE-BASED ACCESS CONTROL - HAPPY PATHS
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_admin_can_access_ledger_report():
@@ -238,7 +238,7 @@ def test_expired_token_returns_401():
 def test_tampered_signature_returns_401():
     """
     Take a valid token, modify one character in the signature segment.
-    The API must reject it — the HMAC verification must fail.
+    The API must reject it - the HMAC verification must fail.
     """
     tokens = login_as(ADMIN)
     valid = tokens["access_token"]
@@ -264,7 +264,7 @@ def test_refresh_token_rejected_as_access_token():
 
 def test_access_token_rejected_as_refresh_token():
     """
-    Supplying an access token to the /refresh endpoint must fail — wrong type.
+    Supplying an access token to the /refresh endpoint must fail - wrong type.
     """
     tokens = login_as(ADMIN)
     r = client.post("/api/v1/auth/refresh",
@@ -273,7 +273,7 @@ def test_access_token_rejected_as_refresh_token():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 7. RBAC ENFORCEMENT — FAILURE PATHS
+# 7. RBAC ENFORCEMENT - FAILURE PATHS
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_viewer_cannot_access_ledger_report():
@@ -292,7 +292,7 @@ def test_viewer_cannot_access_client_list():
 
 
 def test_accountant_cannot_access_ledger_report():
-    """Ledger report requires auditor or admin — accountant must be denied."""
+    """Ledger report requires auditor or admin - accountant must be denied."""
     tokens = login_as(ACCOUNTANT)
     r = client.get("/api/v1/auth/resources/ledger-report",
                    headers={"Authorization": f"Bearer {tokens['access_token']}"})

@@ -1,1 +1,1 @@
-"""LedgerPro Accountants — Task 2 Package"""
+"""LedgerPro Accountants - Task 2 Package"""

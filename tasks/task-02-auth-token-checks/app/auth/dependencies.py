@@ -1,5 +1,5 @@
 """
-LedgerPro Accountants — Task 2: FastAPI Dependencies
+LedgerPro Accountants - Task 2: FastAPI Dependencies
 Bearer token extraction, current user resolution, and RBAC enforcement.
 """
 
@@ -66,7 +66,7 @@ def get_active_user(current_user: dict = Depends(get_current_user)) -> dict:
 
 def require_role(*required_roles: str):
     """
-    Factory dependency — returns a FastAPI dependency that enforces
+    Factory dependency - returns a FastAPI dependency that enforces
     that the caller's role appears in `required_roles` (or higher via hierarchy).
     Usage: Depends(require_role("admin", "auditor"))
     """

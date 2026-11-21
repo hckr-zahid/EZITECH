@@ -51,7 +51,7 @@ def get_invoice(invoice_id: str):
     description="Issue an invoice to a registered client with itemized professional accounting services.",
 )
 def create_invoice(payload: InvoiceCreate):
-    # Verify client exists — 404 Not Found: the resource (client) does not exist.
+    # Verify client exists - 404 Not Found: the resource (client) does not exist.
     # Using 400 Bad Request here would be semantically wrong; the request is well-formed,
     # the referenced client simply does not exist in the system.
     client = db.get_client(payload.client_id)

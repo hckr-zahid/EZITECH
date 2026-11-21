@@ -252,7 +252,7 @@ def test_invalid_email_format_failure():
 
 def test_invoice_creation_nonexistent_client_failure():
     """Verify issuing invoice for non-existent client returns 404 Not Found.
-    HTTP semantics: the referenced resource (client) does not exist — this is 404,
+    HTTP semantics: the referenced resource (client) does not exist - this is 404,
     not 400. A 400 implies the request structure itself is malformed."""
     bad_invoice = {
         "client_id": "CLI-NONEXISTENT",

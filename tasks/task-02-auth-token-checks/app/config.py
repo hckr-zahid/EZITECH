@@ -1,5 +1,5 @@
 """
-LedgerPro Accountants — Task 2: Auth Configuration
+LedgerPro Accountants - Task 2: Auth Configuration
 JWT settings, algorithm, and token lifetime policy.
 
 ADR-002: HS256 chosen for single-service internal signing (see README).
@@ -19,10 +19,10 @@ SECRET_KEY: str = os.getenv(
 )
 ALGORITHM: str = "HS256"
 
-# Access token: short-lived (15 min) — limits blast radius of a leaked token.
+# Access token: short-lived (15 min) - limits blast radius of a leaked token.
 ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
 
-# Refresh token: longer-lived (8 hours) — covers a standard accounting work-shift.
+# Refresh token: longer-lived (8 hours) - covers a standard accounting work-shift.
 REFRESH_TOKEN_EXPIRE_HOURS: int = 8
 
 # API prefix

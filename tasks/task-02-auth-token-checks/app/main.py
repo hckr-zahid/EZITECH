@@ -1,5 +1,5 @@
 """
-LedgerPro Accountants — Task 2: Authentication & Token Checks
+LedgerPro Accountants - Task 2: Authentication & Token Checks
 FastAPI entrypoint with security middleware and auth routes.
 """
 
@@ -22,7 +22,7 @@ from app.config import APP_VERSION, API_PREFIX
 from app.routes.auth import router as auth_router
 
 app = FastAPI(
-    title="LedgerPro Accountants — Auth & Token Security Lab",
+    title="LedgerPro Accountants - Auth & Token Security Lab",
     description=(
         "Task 2: Authentication and token checks. "
         "Implements JWT-based login, role-based access control (RBAC), "

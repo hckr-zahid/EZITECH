@@ -1,4 +1,4 @@
-# 🏢 Task 1: Lab API Setup — LedgerPro Accountants
+# 🏢 Task 1: Lab API Setup - LedgerPro Accountants
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
@@ -48,7 +48,7 @@ To ensure robust security and prevent unhandled server failures:
 
 ### ADR-001: Thread-Safe In-Memory Domain Repository vs. Persistent Database
 * **Status**: Accepted
-* **Context**: The Lab API must serve as the primary security testing target across Tasks 1–6 (fuzzing, authentication testing, rate-limiting, injection payloads, and automated CI/CD scans).
+* **Context**: The Lab API must serve as the primary security testing target across Tasks 1-6 (fuzzing, authentication testing, rate-limiting, injection payloads, and automated CI/CD scans).
 * **Decision**: Implement an in-memory, thread-safe data store protected by re-entrant mutex locks (`threading.Lock`), coupled with an administrative state-reset endpoint (`POST /api/v1/admin/reset`).
 * **Trade-off Analysis**:
   * **Advantages**:

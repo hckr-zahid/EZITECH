@@ -1,5 +1,5 @@
 """
-LedgerPro Accountants — Task 2: Authentication Routes
+LedgerPro Accountants - Task 2: Authentication Routes
 Covers: Login, Refresh, Logout (token invalidation note), Me, Token Inspect.
 """
 
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/auth", tags=["Authentication & Token Management"])
 @router.post(
     "/login",
     response_model=TokenResponse,
-    summary="Staff Login — Issue JWT access + refresh tokens",
+    summary="Staff Login - Issue JWT access + refresh tokens",
     description=(
         "Authenticates LedgerPro staff credentials. Returns a short-lived access token "
         "(15 min) and long-lived refresh token (8 hours). "
@@ -31,7 +31,7 @@ def login(payload: LoginRequest):
     user = authenticate_user(payload.username, payload.password)
     if not user:
         # Return identical message for wrong username OR wrong password
-        # to prevent username enumeration (OWASP API Security — Broken Authentication)
+        # to prevent username enumeration (OWASP API Security - Broken Authentication)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials. Username or password is incorrect.",
@@ -60,10 +60,10 @@ def login(payload: LoginRequest):
 @router.post(
     "/refresh",
     response_model=TokenResponse,
-    summary="Refresh — Exchange a valid refresh token for a new access token",
+    summary="Refresh - Exchange a valid refresh token for a new access token",
     description=(
         "Validates the supplied refresh token (checks signature, expiry, and type claim). "
-        "Issues a fresh access token. Rejects access tokens supplied here — type must be 'refresh'."
+        "Issues a fresh access token. Rejects access tokens supplied here - type must be 'refresh'."
     ),
 )
 def refresh_token(payload: RefreshRequest):
@@ -103,7 +103,7 @@ def refresh_token(payload: RefreshRequest):
 @router.get(
     "/me",
     response_model=UserProfile,
-    summary="Current User — Return authenticated staff profile",
+    summary="Current User - Return authenticated staff profile",
     description="Returns the profile of the currently authenticated staff member. Requires valid access token.",
 )
 def get_me(current_user: dict = Depends(get_active_user)):
@@ -119,15 +119,15 @@ def get_me(current_user: dict = Depends(get_active_user)):
 @router.post(
     "/inspect",
     response_model=TokenInspectResponse,
-    summary="[Security Audit] Token Inspector — Decode claims without enforcement",
+    summary="[Security Audit] Token Inspector - Decode claims without enforcement",
     description=(
         "Security audit utility: decodes and exposes the raw JWT claims. "
-        "Does NOT verify the signature — used to inspect tampered or expired tokens. "
+        "Does NOT verify the signature - used to inspect tampered or expired tokens. "
         "In production this endpoint would be admin-gated or removed."
     ),
 )
 def inspect_token(payload: RefreshRequest):
-    """Decode token claims without enforcing signature or expiry — audit tool."""
+    """Decode token claims without enforcing signature or expiry - audit tool."""
     try:
         # decode_unverified exposes claims regardless of signature or expiry
         claims = jose_jwt.decode(
@@ -171,7 +171,7 @@ def get_ledger_report(current_user: dict = Depends(require_role("auditor", "admi
         "accessed_by": current_user["username"],
         "role": current_user["role"],
         "data": {
-            "reporting_period": "Q4 2026 (Oct–Dec)",
+            "reporting_period": "Q4 2026 (Oct-Dec)",
             "total_billed": 158420.50,
             "total_collected": 119215.25,
             "accounts_receivable": 39205.25,
