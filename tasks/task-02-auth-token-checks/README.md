@@ -1,7 +1,7 @@
 # Task 2: Authentication & Token Security Checks
 
 **Component**: LedgerPro Accountants - API Security Review Lab (Task 2)  
-**Author**: Zahid Ullah (CEH v13, CHFI, ISC² CC)  
+**Author**: Zahid Ullah (CEH v13, CHFI, ISC2 CC)  
 **Organization**: Ezitech Software House (`portal.ezitech.org`)  
 **Service Port**: `8001` (coexists with Task 1 on `8000`)
 
@@ -31,18 +31,20 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 | `bilal.khan` | Bilal Khan | Client Relations | **viewer** | `BilalView@2026` | Active |
 | `khalid.mansoor`| Khalid Mansoor | Former Employee | **accountant** | `OldPass#2024` | **Deactivated** |
 
+Note: These are lab-only seed credentials, never used in production.
+
 ### Role Privilege Matrix
 
-```
+```text
        [admin] (Fatima Zahra)
-          │  Full access to all accounting data, ledgers, & management
-          ▼
+          |  Full access to all accounting data, ledgers, & management
+          v
       [auditor] (Tariq Mahmood)
-          │  Access to ledgers, client audits, and financial compliance
-          ▼
+          |  Access to ledgers, client audits, and financial compliance
+          v
      [accountant] (Zainab Ali)
-          │  Access to client invoicing, billing records, and tax filings
-          ▼
+          |  Access to client invoicing, billing records, and tax filings
+          v
        [viewer] (Bilal Khan)
              Read-only access to basic public rates and non-sensitive data
 ```

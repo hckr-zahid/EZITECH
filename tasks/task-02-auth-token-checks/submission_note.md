@@ -1,7 +1,7 @@
 # Task 2 Submission Note: Authentication & Token Checks
 
 **Project**: LedgerPro Accountants API Security Review  
-**Intern**: Zahid Ullah (CEH v13, CHFI, ISC² CC)  
+**Intern**: Zahid Ullah (CEH v13, CHFI, ISC2 CC)  
 **Portal**: Ezitech Software House (`portal.ezitech.org`)  
 **Task**: Task 2 - Authentication and Token Checks  
 **Repository**: `https://github.com/hckr-zahid/EZITECH` (Branch: `main`)
