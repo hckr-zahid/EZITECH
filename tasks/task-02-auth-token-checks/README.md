@@ -89,17 +89,26 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 
 ---
 
-## 5. Security Audit Finding: Post-Logout Token Persistence
+## 5. Architectural Decision: Stateless Logout & Post-Logout Token Persistence
 
-### Finding ID: SEC-FINDING-001 (CWE-613 / OWASP API2:2023 Broken Authentication)
-* **Status**: Documented with Mitigation Roadmap
+### Architectural Decision Record (ADR-003): Stateless Logout Model
+* **Decision**: We chose a **purely stateless token model** for Task 2 with no server-side session store or token revocation table. Logout is handled exclusively client-side by discarding tokens.
+* **The Accepted Trade-off**: The explicit trade-off of statelessness is that the server cannot actively invalidate a token once issued. If an access token is intercepted or exfiltrated, **it remains valid for the remainder of its 15-minute TTL (and up to 8 hours for a refresh token) even after the user logs out**.
+* **Production Deployment Choice**: In a production deployment, this trade-off would be closed without sacrificing scalability using one of two patterns:
+  1. **Short TTL + Ephemeral Revocation List (Recommended)**: Reduce access token TTL to 5 minutes, pair it with a Redis blocklist storing revoked `jti`s with TTL matching remaining token lifetime (`exp - now()`), so the cache cleans itself automatically.
+  2. **Token Version Counter (`token_version`)**: Store a monotonic integer `token_version` on each user record; bump it on logout/password change. Tokens embed the version at mint time, and `dependencies.py` asserts the token's version matches the user's current version.
+
+---
+
+### Finding Record: SEC-FINDING-001 (CWE-613 / OWASP API2:2023 Broken Authentication)
+* **Status**: Architectural Trade-off Documented & Analyzed
 * **Severity**: Medium (Impact: High, Exploitability: Moderate)
 
-#### 1. Vulnerability Description
-Currently, LedgerPro implements stateless JWT authentication without a server-side logout endpoint. Logout is handled exclusively client-side (the frontend client deletes its stored tokens). Because the backend does not record token invalidation, an access token exfiltrated prior to logout remains cryptographically valid for its entire remaining 15-minute Time-To-Live (and 8 hours for refresh tokens).
+#### 1. Technical Analysis of the Gap
+Because `routes/auth.py` and `dependencies.py` rely purely on mathematical signature and expiration verification without state checks, calling logout on the frontend leaves the cryptographic validity of the token completely untouched on the backend.
 
 #### 2. Exploit Scenario & Request/Response Proof
-* **Scenario**: An auditor (`tariq.mahmood`) logs out on a shared workstation at 14:00. An attacker on the local network who sniffed the Bearer token at 13:58 replays it at 14:05:
+* **Scenario**: Auditor `tariq.mahmood` logs out on a shared workstation at 14:00. An attacker on the local network who sniffed the Bearer token at 13:58 replays it at 14:05:
 
 * **Attacker Request**:
   ```http
@@ -108,7 +117,7 @@ Currently, LedgerPro implements stateless JWT authentication without a server-si
   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0YXJpcS5tYWhtb29kIiwicm9sZSI6ImF1ZGl0b3IiLCJleHAiOjE3OTUyNzUwMDAsImlhdCI6MTc5NTI3NDEwMCwianRpIjoiNDk1OTM5MmRhMTllNDcwYmJhZmI2Yzk0ZmI2YzY1NTgiLCJ0eXBlIjoiYWNjZXNzIn0.8Fv...
   ```
 
-* **Vulnerable Server Response**:
+* **Server Response (Vulnerable to Post-Session Replay)**:
   ```http
   HTTP/1.1 200 OK
   Content-Type: application/json
@@ -131,16 +140,6 @@ The attacker maintains an unrevoked 15-minute window of post-session persistence
 1. **Client/Server Telemetry Divergence**: SIEM log analysis correlating an application client-side "Logout" event from IP $A$ with subsequent requests bearing the same `jti` from IP $B$.
 2. **Concurrent Session / ASN Anomalies**: Simultaneous requests using the same `jti` or `sub` originating from different subnets, Autonomous Systems (ASNs), or impossible geographical travel coordinates.
 3. **Out-of-Shift Access**: API requests for general ledgers occurring after a staff member's working hours using tokens minted during their workday.
-
-#### 5. Architectural Decision: The Fix & Trade-off (ADR-003)
-* **Proposed Fix**:
-  1. Introduce a dedicated `POST /api/v1/auth/logout` endpoint accepting the current token.
-  2. Implement an ephemeral **Redis-backed Token Denylist (Blocklist)** keyed by the token's unique `jti`.
-  3. Set key expiration (`TTL`) in Redis equal to the token's remaining lifetime: `TTL = exp - current_time()`.
-  4. In `app/auth/dependencies.py:get_current_user`, add a verification check: `if redis_client.exists(f"revoked:{jti}"): raise HTTPException(401, "Token has been revoked")`.
-* **Architectural Trade-off**:
-  - **Pros**: Instant, deterministic session termination; immediate containment if credentials are compromised.
-  - **Cons**: Eliminates the purely stateless benefit of JWTs. Every incoming HTTP request must perform an I/O query against the Redis cache, introducing external infrastructure dependency and ~1–2ms of request latency.
 
 ---
 
