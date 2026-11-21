@@ -10,7 +10,7 @@ class LoginRequest(BaseModel):
     username: str = Field(
         ..., min_length=3, max_length=80,
         description="LedgerPro staff username (firstname.lastname format)",
-        examples=["sarah.chen"],
+        examples=["fatima.zahra"],
     )
     password: str = Field(
         ..., min_length=6, max_length=128,

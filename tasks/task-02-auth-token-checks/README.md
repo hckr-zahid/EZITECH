@@ -25,25 +25,25 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 
 | Username | Full Name | Department | Role | Default Password | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `sarah.chen` | Sarah Chen | Administration | **admin** | `SarahSecure#2026` | Active |
-| `james.okafor` | James Okafor | Statutory Audit & Assurance | **auditor** | `JamesAudit@2026` | Active |
-| `priya.mehta` | Priya Mehta | Tax Compliance & Advisory | **accountant** | `PriyaTax!2026` | Active |
-| `daniel.wright` | Daniel Wright | Client Relations | **viewer** | `DanielView@2026` | Active |
-| `inactive.user`| Inactive Staff Account | Former Employee | **accountant** | `OldPass#2024` | **Deactivated** |
+| `fatima.zahra` | Fatima Zahra | Administration | **admin** | `FatimaSecure#2026` | Active |
+| `tariq.mahmood` | Tariq Mahmood | Statutory Audit & Assurance | **auditor** | `TariqAudit@2026` | Active |
+| `zainab.ali` | Zainab Ali | Tax Compliance & Advisory | **accountant** | `ZainabTax!2026` | Active |
+| `bilal.khan` | Bilal Khan | Client Relations | **viewer** | `BilalView@2026` | Active |
+| `khalid.mansoor`| Khalid Mansoor | Former Employee | **accountant** | `OldPass#2024` | **Deactivated** |
 
 ### Role Privilege Matrix
 
 ```
-       [admin] (Sarah Chen)
+       [admin] (Fatima Zahra)
           │  Full access to all accounting data, ledgers, & management
           ▼
-      [auditor] (James Okafor)
+      [auditor] (Tariq Mahmood)
           │  Access to ledgers, client audits, and financial compliance
           ▼
-     [accountant] (Priya Mehta)
+     [accountant] (Zainab Ali)
           │  Access to client invoicing, billing records, and tax filings
           ▼
-       [viewer] (Daniel Wright)
+       [viewer] (Bilal Khan)
              Read-only access to basic public rates and non-sensitive data
 ```
 

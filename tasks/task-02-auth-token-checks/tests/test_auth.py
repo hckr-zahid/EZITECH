@@ -19,11 +19,11 @@ from app.config import SECRET_KEY, ALGORITHM
 client = TestClient(app, raise_server_exceptions=False)
 
 # ── Credential fixtures (match users.py seed data exactly) ─────────────────
-ADMIN    = {"username": "sarah.chen",    "password": "SarahSecure#2026"}
-AUDITOR  = {"username": "james.okafor", "password": "JamesAudit@2026"}
-ACCOUNTANT = {"username": "priya.mehta", "password": "PriyaTax!2026"}
-VIEWER   = {"username": "daniel.wright", "password": "DanielView@2026"}
-INACTIVE = {"username": "inactive.user", "password": "OldPass#2024"}
+ADMIN    = {"username": "fatima.zahra",  "password": "FatimaSecure#2026"}
+AUDITOR  = {"username": "tariq.mahmood", "password": "TariqAudit@2026"}
+ACCOUNTANT = {"username": "zainab.ali",  "password": "ZainabTax!2026"}
+VIEWER   = {"username": "bilal.khan",    "password": "BilalView@2026"}
+INACTIVE = {"username": "khalid.mansoor", "password": "OldPass#2024"}
 
 
 def login_as(creds: dict) -> dict:
@@ -66,7 +66,7 @@ def test_admin_login_returns_tokens():
     assert "refresh_token" in data
     assert data["token_type"] == "bearer"
     assert data["role"] == "admin"
-    assert data["username"] == "sarah.chen"
+    assert data["username"] == "fatima.zahra"
     assert data["expires_in_seconds"] == 900  # 15 min
 
 
@@ -89,7 +89,7 @@ def test_access_token_contains_expected_claims():
     """The JWT payload must carry sub, role, exp, iat, and type=access."""
     data = login_as(ADMIN)
     claims = decode_token(data["access_token"])
-    assert claims["sub"] == "sarah.chen"
+    assert claims["sub"] == "fatima.zahra"
     assert claims["role"] == "admin"
     assert claims["type"] == "access"
     assert "exp" in claims
@@ -112,7 +112,7 @@ def test_me_returns_correct_profile():
     r = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {tokens['access_token']}"})
     assert r.status_code == 200
     data = r.json()
-    assert data["username"] == "james.okafor"
+    assert data["username"] == "tariq.mahmood"
     assert data["role"] == "auditor"
     assert data["department"] == "Statutory Audit & Assurance"
     assert "@ledgerpro.com" in data["email"]
@@ -172,7 +172,7 @@ def test_all_roles_can_access_public_rates():
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_wrong_password_returns_401():
-    r = client.post("/api/v1/auth/login", json={"username": "sarah.chen", "password": "WrongPassword"})
+    r = client.post("/api/v1/auth/login", json={"username": "fatima.zahra", "password": "WrongPassword"})
     assert r.status_code == 401
 
 
@@ -188,7 +188,7 @@ def test_wrong_and_nonexistent_return_identical_message():
     between 'user does not exist' and 'user exists but password is wrong'.
     """
     r_bad_pass = client.post("/api/v1/auth/login",
-                              json={"username": "sarah.chen", "password": "WrongPassword"})
+                              json={"username": "fatima.zahra", "password": "WrongPassword"})
     r_no_user = client.post("/api/v1/auth/login",
                              json={"username": "ghost.user", "password": "WrongPassword"})
     assert r_bad_pass.json()["message"] == r_no_user.json()["message"]
@@ -227,7 +227,7 @@ def test_expired_token_returns_401():
     The API must reject it with 401, never serve the resource.
     """
     expired_token = create_access_token(
-        data={"sub": "sarah.chen", "role": "admin"},
+        data={"sub": "fatima.zahra", "role": "admin"},
         expires_delta=timedelta(seconds=-1),
     )
     r = client.get("/api/v1/auth/me",
@@ -309,14 +309,14 @@ def test_inspect_valid_token_returns_claims():
                     json={"refresh_token": tokens["access_token"]})
     assert r.status_code == 200
     data = r.json()
-    assert data["subject"] == "sarah.chen"
+    assert data["subject"] == "fatima.zahra"
     assert data["token_type"] == "access"
     assert data["is_expired"] is False
 
 
 def test_inspect_expired_token_reports_expired():
     expired = create_access_token(
-        data={"sub": "james.okafor", "role": "auditor"},
+        data={"sub": "tariq.mahmood", "role": "auditor"},
         expires_delta=timedelta(seconds=-1),
     )
     r = client.post("/api/v1/auth/inspect", json={"refresh_token": expired})

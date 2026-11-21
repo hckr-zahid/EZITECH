@@ -25,46 +25,46 @@ def verify_password(plain: str, hashed: str) -> bool:
 # Passwords are bcrypt-hashed. Plaintext appears here only once
 # (at seed time) so the store never holds a recoverable secret.
 USERS: Dict[str, dict] = {
-    "sarah.chen": {
-        "username": "sarah.chen",
-        "full_name": "Sarah Chen",
-        "email": "s.chen@ledgerpro.com",
+    "fatima.zahra": {
+        "username": "fatima.zahra",
+        "full_name": "Fatima Zahra",
+        "email": "f.zahra@ledgerpro.com",
         "role": "admin",
         "department": "Administration",
-        "hashed_password": hash_password("SarahSecure#2026"),
+        "hashed_password": hash_password("FatimaSecure#2026"),
         "disabled": False,
     },
-    "james.okafor": {
-        "username": "james.okafor",
-        "full_name": "James Okafor",
-        "email": "j.okafor@ledgerpro.com",
+    "tariq.mahmood": {
+        "username": "tariq.mahmood",
+        "full_name": "Tariq Mahmood",
+        "email": "t.mahmood@ledgerpro.com",
         "role": "auditor",
         "department": "Statutory Audit & Assurance",
-        "hashed_password": hash_password("JamesAudit@2026"),
+        "hashed_password": hash_password("TariqAudit@2026"),
         "disabled": False,
     },
-    "priya.mehta": {
-        "username": "priya.mehta",
-        "full_name": "Priya Mehta",
-        "email": "p.mehta@ledgerpro.com",
+    "zainab.ali": {
+        "username": "zainab.ali",
+        "full_name": "Zainab Ali",
+        "email": "z.ali@ledgerpro.com",
         "role": "accountant",
         "department": "Tax Compliance & Advisory",
-        "hashed_password": hash_password("PriyaTax!2026"),
+        "hashed_password": hash_password("ZainabTax!2026"),
         "disabled": False,
     },
-    "daniel.wright": {
-        "username": "daniel.wright",
-        "full_name": "Daniel Wright",
-        "email": "d.wright@ledgerpro.com",
+    "bilal.khan": {
+        "username": "bilal.khan",
+        "full_name": "Bilal Khan",
+        "email": "b.khan@ledgerpro.com",
         "role": "viewer",
         "department": "Client Relations",
-        "hashed_password": hash_password("DanielView@2026"),
+        "hashed_password": hash_password("BilalView@2026"),
         "disabled": False,
     },
-    "inactive.user": {
-        "username": "inactive.user",
-        "full_name": "Inactive Staff Account",
-        "email": "inactive@ledgerpro.com",
+    "khalid.mansoor": {
+        "username": "khalid.mansoor",
+        "full_name": "Khalid Mansoor",
+        "email": "k.mansoor@ledgerpro.com",
         "role": "accountant",
         "department": "Former Employee",
         "hashed_password": hash_password("OldPass#2024"),
