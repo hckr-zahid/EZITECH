@@ -1,6 +1,6 @@
 # Task 2: Authentication & Token Security Checks
 
-**Component**: LedgerPro Accountants — API Security Review Lab (Task 2)  
+**Component**: LedgerPro Accountants - API Security Review Lab (Task 2)  
 **Author**: Zahid Ullah (CEH v13, CHFI, ISC² CC)  
 **Organization**: Ezitech Software House (`portal.ezitech.org`)  
 **Service Port**: `8001` (coexists with Task 1 on `8000`)
@@ -51,7 +51,7 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 
 ## 3. Architecture Decision Record (ADR-002)
 
-### Decision: Selection of JWT Signing Algorithm — HS256 vs RS256
+### Decision: Selection of JWT Signing Algorithm - HS256 vs RS256
 
 * **Status**: Accepted
 * **Context**: The LedgerPro API requires stateless, cryptographically verifiable bearer tokens for authenticating requests. We evaluated two primary signing architectures:
@@ -70,7 +70,7 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 ## 4. Key Security Controls & Defenses Implemented
 
 ### 1. Username Enumeration Prevention
-* **Vulnerability Mitigated**: OWASP Top 10 API3:2023 — Broken Object Property Level Authorization / Identification.
+* **Vulnerability Mitigated**: OWASP Top 10 API3:2023 - Broken Object Property Level Authorization / Identification.
 * **Implementation**: Whether a client provides an invalid username or a wrong password, the endpoint returns an identical `401 Unauthorized` response with the uniform message: `Invalid username or password`. No timing or descriptive differentiation is exposed to attackers attempting to harvest usernames.
 
 ### 2. Token Type Confusion Defense
@@ -108,7 +108,7 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 Because `routes/auth.py` and `dependencies.py` rely purely on mathematical signature and expiration verification without state checks, calling logout on the frontend leaves the cryptographic validity of the token completely untouched on the backend.
 
 #### 2. Exploit Scenario & Request/Response Proof
-* **Scenario**: Auditor `tariq.mahmood` logs out on a shared workstation at 14:00. An attacker on the local network who sniffed the Bearer token at 13:58 replays it at 14:05:
+* **Scenario**: Auditor `tariq.mahmood` finishes an audit review on a shared audit desk workstation and clicks "Log Out" at 14:00. The frontend application discards its active session in memory, but the unexpired Bearer token remains persisted in the shared browser's `localStorage` (or was logged by an outbound corporate proxy). A second employee or unauthorized user accessing that same workstation at 14:05 retrieves the token and replays it:
 
 * **Attacker Request**:
   ```http
@@ -128,7 +128,7 @@ Because `routes/auth.py` and `dependencies.py` rely purely on mathematical signa
     "resource": "CONFIDENTIAL GENERAL LEDGER AUDIT REPORT",
     "requested_by": "tariq.mahmood",
     "role": "auditor",
-    "clearance": "RESTRICTED — INTERNAL PARTNERS ONLY",
+    "clearance": "RESTRICTED - INTERNAL PARTNERS ONLY",
     "ledger_summary": { ... }
   }
   ```
