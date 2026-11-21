@@ -89,7 +89,62 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 
 ---
 
-## 5. API Endpoints Reference
+## 5. Security Audit Finding: Post-Logout Token Persistence
+
+### Finding ID: SEC-FINDING-001 (CWE-613 / OWASP API2:2023 Broken Authentication)
+* **Status**: Documented with Mitigation Roadmap
+* **Severity**: Medium (Impact: High, Exploitability: Moderate)
+
+#### 1. Vulnerability Description
+Currently, LedgerPro implements stateless JWT authentication without a server-side logout endpoint. Logout is handled exclusively client-side (the frontend client deletes its stored tokens). Because the backend does not record token invalidation, an access token exfiltrated prior to logout remains cryptographically valid for its entire remaining 15-minute Time-To-Live (and 8 hours for refresh tokens).
+
+#### 2. Exploit Scenario & Request/Response Proof
+* **Scenario**: An auditor (`tariq.mahmood`) logs out on a shared workstation at 14:00. An attacker on the local network who sniffed the Bearer token at 13:58 replays it at 14:05:
+
+* **Attacker Request**:
+  ```http
+  GET /api/v1/auth/resources/ledger-report HTTP/1.1
+  Host: 127.0.0.1:8001
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0YXJpcS5tYWhtb29kIiwicm9sZSI6ImF1ZGl0b3IiLCJleHAiOjE3OTUyNzUwMDAsImlhdCI6MTc5NTI3NDEwMCwianRpIjoiNDk1OTM5MmRhMTllNDcwYmJhZmI2Yzk0ZmI2YzY1NTgiLCJ0eXBlIjoiYWNjZXNzIn0.8Fv...
+  ```
+
+* **Vulnerable Server Response**:
+  ```http
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+  Server: LedgerPro-Lab-Engine
+  Cache-Control: no-store
+
+  {
+    "resource": "CONFIDENTIAL GENERAL LEDGER AUDIT REPORT",
+    "requested_by": "tariq.mahmood",
+    "role": "auditor",
+    "clearance": "RESTRICTED — INTERNAL PARTNERS ONLY",
+    "ledger_summary": { ... }
+  }
+  ```
+
+#### 3. What an Attacker Gains
+The attacker maintains an unrevoked 15-minute window of post-session persistence. They can harvest sensitive firm trial balances, extract corporate client rosters, or execute unmonitored financial transactions under the auditor's identity. If the 8-hour refresh token was also captured, the attacker can indefinitely mint fresh access tokens until the 8-hour window closes.
+
+#### 4. How You Would Notice It (Telemetry & Detection)
+1. **Client/Server Telemetry Divergence**: SIEM log analysis correlating an application client-side "Logout" event from IP $A$ with subsequent requests bearing the same `jti` from IP $B$.
+2. **Concurrent Session / ASN Anomalies**: Simultaneous requests using the same `jti` or `sub` originating from different subnets, Autonomous Systems (ASNs), or impossible geographical travel coordinates.
+3. **Out-of-Shift Access**: API requests for general ledgers occurring after a staff member's working hours using tokens minted during their workday.
+
+#### 5. Architectural Decision: The Fix & Trade-off (ADR-003)
+* **Proposed Fix**:
+  1. Introduce a dedicated `POST /api/v1/auth/logout` endpoint accepting the current token.
+  2. Implement an ephemeral **Redis-backed Token Denylist (Blocklist)** keyed by the token's unique `jti`.
+  3. Set key expiration (`TTL`) in Redis equal to the token's remaining lifetime: `TTL = exp - current_time()`.
+  4. In `app/auth/dependencies.py:get_current_user`, add a verification check: `if redis_client.exists(f"revoked:{jti}"): raise HTTPException(401, "Token has been revoked")`.
+* **Architectural Trade-off**:
+  - **Pros**: Instant, deterministic session termination; immediate containment if credentials are compromised.
+  - **Cons**: Eliminates the purely stateless benefit of JWTs. Every incoming HTTP request must perform an I/O query against the Redis cache, introducing external infrastructure dependency and ~1–2ms of request latency.
+
+---
+
+## 6. API Endpoints Reference
 
 ### Authentication Routes (`/api/v1/auth`)
 
@@ -110,7 +165,7 @@ In accordance with LedgerPro Accountants' operational structure, 5 realistic sta
 
 ---
 
-## 6. How to Run & Verify
+## 7. How to Run & Verify
 
 ### Prerequisites
 * Python 3.10+
