@@ -126,11 +126,36 @@ def test_create_invoice_happy_path():
 
 
 def test_record_invoice_payment_happy_path():
-    """Verify recording payment on an issued invoice settles status."""
+    """
+    Verify recording payment on an issued invoice:
+    1. Transitions invoice status from Issued -> Paid.
+    2. Reduces the client's outstanding_balance by exactly the invoice total_amount.
+       This is the accounting impact an attacker would abuse (e.g. replaying the payment
+       endpoint to drain a client balance to zero without actual funds received).
+    """
+    # INV-2026-002 belongs to CLI-1003 (Solaria BioTech Inc.)
+    # Seed balance for CLI-1003: $34,825.00
+    # INV-2026-002 total_amount: $31,203.06
+    # Expected balance after payment: 34825.00 - 31203.06 = 3621.94
+
+    client_before = client.get("/api/v1/clients/CLI-1003").json()
+    balance_before = client_before["outstanding_balance"]
+    invoice_total = client.get("/api/v1/invoices/INV-2026-002").json()["total_amount"]
+
     response = client.post("/api/v1/invoices/INV-2026-002/pay")
     assert response.status_code == 200
     paid_inv = response.json()
+
+    # Assert status transition
     assert paid_inv["status"] == "Paid"
+
+    # Assert accounting impact: balance must have dropped by exactly the invoice total
+    client_after = client.get("/api/v1/clients/CLI-1003").json()
+    expected_balance = round(balance_before - invoice_total, 2)
+    assert client_after["outstanding_balance"] == expected_balance, (
+        f"Balance not reduced correctly: was {balance_before}, invoice total {invoice_total}, "
+        f"expected {expected_balance}, got {client_after['outstanding_balance']}"
+    )
 
 
 def test_post_balanced_ledger_entry_happy_path():
@@ -226,7 +251,9 @@ def test_invalid_email_format_failure():
 
 
 def test_invoice_creation_nonexistent_client_failure():
-    """Verify issuing invoice for non-existent client returns 400 Bad Request."""
+    """Verify issuing invoice for non-existent client returns 404 Not Found.
+    HTTP semantics: the referenced resource (client) does not exist — this is 404,
+    not 400. A 400 implies the request structure itself is malformed."""
     bad_invoice = {
         "client_id": "CLI-NONEXISTENT",
         "due_date": "2026-12-31",
@@ -239,7 +266,7 @@ def test_invoice_creation_nonexistent_client_failure():
         ],
     }
     response = client.post("/api/v1/invoices", json=bad_invoice)
-    assert response.status_code == 400
+    assert response.status_code == 404
     data = response.json()
     assert "does not exist" in data["message"]
 

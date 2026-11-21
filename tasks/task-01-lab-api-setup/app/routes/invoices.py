@@ -51,12 +51,14 @@ def get_invoice(invoice_id: str):
     description="Issue an invoice to a registered client with itemized professional accounting services.",
 )
 def create_invoice(payload: InvoiceCreate):
-    # Verify client exists
+    # Verify client exists — 404 Not Found: the resource (client) does not exist.
+    # Using 400 Bad Request here would be semantically wrong; the request is well-formed,
+    # the referenced client simply does not exist in the system.
     client = db.get_client(payload.client_id)
     if not client:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cannot issue invoice: Target client '{payload.client_id}' does not exist.",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Cannot issue invoice: Client '{payload.client_id}' does not exist in LedgerPro.",
         )
 
     # Verify client is not suspended
@@ -94,6 +96,11 @@ def record_payment(invoice_id: str):
     invoice["status"] = "Paid"
     client = db.get_client(invoice["client_id"])
     if client:
-        client["outstanding_balance"] = max(0.0, client["outstanding_balance"] - invoice["total_amount"])
+        # Round to 2 decimal places to prevent IEEE 754 floating-point drift
+        # (e.g. 34825.00 - 31203.06 = 3621.9399999999987 without rounding).
+        # Financial systems must always store monetary values rounded to currency precision.
+        client["outstanding_balance"] = round(
+            max(0.0, client["outstanding_balance"] - invoice["total_amount"]), 2
+        )
 
     return invoice
