@@ -37,7 +37,7 @@ Note: These are lab-only seed credentials, never used in production.
 
 ```text
        [admin] (Fatima Zahra)
-          |  Full access to all accounting data, ledgers, & management
+          |  Full access to all accounting data, ledgers, and management
           v
       [auditor] (Tariq Mahmood)
           |  Access to ledgers, client audits, and financial compliance
@@ -46,7 +46,7 @@ Note: These are lab-only seed credentials, never used in production.
           |  Access to client invoicing, billing records, and tax filings
           v
        [viewer] (Bilal Khan)
-             Read-only access to basic public rates and non-sensitive data
+             Read-only access to client billing invoices and payment status
 ```
 
 ---
@@ -162,7 +162,7 @@ The attacker maintains an unrevoked 15-minute window of post-session persistence
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/v1/auth/resources/ledger-report` | `auditor` or higher (`admin`) | Confidential general ledger financial report |
 | `GET` | `/api/v1/auth/resources/client-list` | `accountant` or higher | Full corporate client roster and billing profiles |
-| `GET` | `/api/v1/auth/resources/public-rates` | `viewer` or higher (All active staff) | Public standard billing rates |
+| `GET` | `/api/v1/auth/resources/client-invoices` | `viewer` or higher (All active staff) | Read-only corporate client billing invoices |
 
 ---
 

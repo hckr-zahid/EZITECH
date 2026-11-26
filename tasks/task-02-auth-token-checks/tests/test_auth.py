@@ -159,12 +159,14 @@ def test_accountant_can_access_client_list():
     assert len(r.json()["clients"]) == 5
 
 
-def test_all_roles_can_access_public_rates():
+def test_all_roles_can_access_client_invoices():
+    """All staff roles (admin, auditor, accountant, viewer) can access read-only client invoices."""
     for creds in [ADMIN, AUDITOR, ACCOUNTANT, VIEWER]:
         tokens = login_as(creds)
-        r = client.get("/api/v1/auth/resources/public-rates",
+        r = client.get("/api/v1/auth/resources/client-invoices",
                        headers={"Authorization": f"Bearer {tokens['access_token']}"})
         assert r.status_code == 200, f"Failed for {creds['username']}"
+        assert "invoices" in r.json()
 
 
 # ═══════════════════════════════════════════════════════════════════════════

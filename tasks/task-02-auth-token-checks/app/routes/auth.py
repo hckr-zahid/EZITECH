@@ -202,18 +202,26 @@ def get_client_list(current_user: dict = Depends(require_role("accountant", "aud
 
 
 @router.get(
-    "/resources/public-rates",
-    summary="[Any Authenticated User] View LedgerPro Published Service Rates",
-    description="Accessible to all authenticated staff regardless of role.",
+    "/resources/client-invoices",
+    summary="[Viewer+] View Client Billing Invoices",
+    description="Accessible to all authenticated staff (viewer, accountant, auditor, admin).",
 )
-def get_public_rates(current_user: dict = Depends(get_active_user)):
+def get_client_invoices(current_user: dict = Depends(require_role("viewer", "accountant", "auditor", "admin"))):
     return {
-        "resource": "LedgerPro Published Service Rates (FY2026)",
+        "resource": "LedgerPro Client Invoices (Read-Only)",
         "accessed_by": current_user["username"],
-        "rates": [
-            {"service": "Statutory Financial Audit", "rate_per_hour_usd": 225.0},
-            {"service": "Corporate Tax Compliance (Form 1120)", "rate_per_hour_usd": 245.0},
-            {"service": "R&D Tax Credit (Section 41)", "rate_per_hour_usd": 275.0},
-            {"service": "Fractional CFO Advisory", "rate_per_hour_usd": 195.0},
+        "role": current_user["role"],
+        "invoices": [
+            {"invoice_id": "INV-2026-001", "client_id": "CLI-1001", "client_name": "Apex Advisory Partners LLC", "amount": 4200.00, "status": "Paid"},
+            {"invoice_id": "INV-2026-002", "client_id": "CLI-1002", "client_name": "Crestview Logistics UK Ltd", "amount": 8750.50, "status": "Issued"},
+            {"invoice_id": "INV-2026-003", "client_id": "CLI-1003", "client_name": "Solaria BioTech Inc.", "amount": 12500.00, "status": "Pending_Review"},
         ],
     }
+
+
+@router.get(
+    "/resources/public-rates",
+    include_in_schema=False,
+)
+def get_public_rates(current_user: dict = Depends(get_active_user)):
+    return get_client_invoices(current_user)
