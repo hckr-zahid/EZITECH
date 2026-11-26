@@ -18,7 +18,7 @@ from app.config import SECRET_KEY, ALGORITHM
 
 client = TestClient(app, raise_server_exceptions=False)
 
-# ── Credential fixtures (match users.py seed data exactly) ─────────────────
+# -- Credential fixtures (match users.py seed data exactly) -----------------
 ADMIN    = {"username": "fatima.zahra",  "password": "FatimaSecure#2026"}
 AUDITOR  = {"username": "tariq.mahmood", "password": "TariqAudit@2026"}
 ACCOUNTANT = {"username": "zainab.ali",  "password": "ZainabTax!2026"}
@@ -33,9 +33,9 @@ def login_as(creds: dict) -> dict:
     return r.json()
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 1. SYSTEM HEALTH & SECURITY HEADERS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_health_endpoint():
     r = client.get("/health")
@@ -56,9 +56,9 @@ def test_auth_responses_not_cached():
     assert "no-store" in r.headers.get("cache-control", "")
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 2. LOGIN - HAPPY PATHS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_admin_login_returns_tokens():
     data = login_as(ADMIN)
@@ -103,9 +103,9 @@ def test_refresh_token_type_claim_is_refresh():
     assert claims["type"] == "refresh"
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 3. /ME - AUTHENTICATED PROFILE
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_me_returns_correct_profile():
     tokens = login_as(AUDITOR)
@@ -118,9 +118,9 @@ def test_me_returns_correct_profile():
     assert "@ledgerpro.com" in data["email"]
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 4. TOKEN REFRESH - HAPPY PATH
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_refresh_issues_new_access_token():
     tokens = login_as(ADMIN)
@@ -132,9 +132,9 @@ def test_refresh_issues_new_access_token():
     assert new_tokens["access_token"] != tokens["access_token"]
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 5. ROLE-BASED ACCESS CONTROL - HAPPY PATHS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_admin_can_access_ledger_report():
     tokens = login_as(ADMIN)
@@ -169,9 +169,9 @@ def test_all_roles_can_access_client_invoices():
         assert "invoices" in r.json()
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 6. AUTHENTICATION FAILURE PATHS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_wrong_password_returns_401():
     r = client.post("/api/v1/auth/login", json={"username": "fatima.zahra", "password": "WrongPassword"})
@@ -274,9 +274,9 @@ def test_access_token_rejected_as_refresh_token():
     assert r.status_code == 401
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 7. RBAC ENFORCEMENT - FAILURE PATHS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_viewer_cannot_access_ledger_report():
     """Viewer role must be denied access to auditor-only resource."""
@@ -301,9 +301,9 @@ def test_accountant_cannot_access_ledger_report():
     assert r.status_code == 403
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 8. TOKEN INSPECTOR (SECURITY AUDIT TOOL)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 def test_inspect_valid_token_returns_claims():
     tokens = login_as(ADMIN)

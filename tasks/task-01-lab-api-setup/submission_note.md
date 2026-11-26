@@ -1,4 +1,4 @@
-# 📝 Task 1 Submission Note: Lab API Setup - LedgerPro Accountants
+#  Task 1 Submission Note: Lab API Setup - LedgerPro Accountants
 
 **Student / Intern**: Zahid Ullah  
 **Technology**: Cyber Security (Advanced)  

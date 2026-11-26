@@ -1,4 +1,4 @@
-# 🏢 Task 1: Lab API Setup - LedgerPro Accountants
+#  Task 1: Lab API Setup - LedgerPro Accountants
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
@@ -6,17 +6,17 @@
 [![Pytest](https://img.shields.io/badge/Pytest-18%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](https://docs.pytest.org/)
 [![Security Headers](https://img.shields.io/badge/OWASP-Security%20Headers%20Active-blue.svg)](https://owasp.org)
 
-## 📌 Executive Summary
+##  Executive Summary
 This laboratory environment establishes the target core accounting backend for **LedgerPro Accountants** (a public accounting and audit firm). Built as the foundation for a 6-task security review, it provides a realistic, testable, and robust REST API that simulates real-world client onboarding, professional service billing, and double-entry General Ledger bookkeeping.
 
 ---
 
-## 🏛️ Business Domain & Realistic Datasets
+##  Business Domain & Realistic Datasets
 In accordance with professional accounting firm operations, all data entities and seed records utilize authentic commercial profiles with **zero *lorem ipsum***:
 
 * **Corporate Accounting Clients**: Real entities with genuine tax identifications (`EIN-12-3456789`, `VAT-GB987654321`), credit ceilings, and billing currencies:
   * `Apex Advisory Partners LLC` (Active, $75,000 credit line)
-  * `Crestview Logistics UK Ltd` (Active, £120,000 credit line)
+  * `Crestview Logistics UK Ltd` (Active, GBP 120,000 credit line)
   * `Solaria BioTech Inc.` (Under Audit, $50,000 credit line)
   * `Vanguard Retail Holdings` (Active, $150,000 credit line)
   * `Sterling Financial Trust` (Suspended, risk containment state)
@@ -31,7 +31,7 @@ In accordance with professional accounting firm operations, all data entities an
 
 ---
 
-## 🛡️ Input Validation & Crash Prevention
+##  Input Validation & Crash Prevention
 To ensure robust security and prevent unhandled server failures:
 1. **Strict Pydantic Schema Validation**: Every endpoint enforces strict types, non-empty text, email formats, and positive quantities ($> 0$).
 2. **Normalized Error Schemas**: All invalid or empty payloads trigger structured `422 Unprocessable Content` responses detailing the affected fields.
@@ -44,7 +44,7 @@ To ensure robust security and prevent unhandled server failures:
 
 ---
 
-## ⚖️ Architectural Decision Record (ADR)
+##  Architectural Decision Record (ADR)
 
 ### ADR-001: Thread-Safe In-Memory Domain Repository vs. Persistent Database
 * **Status**: Accepted
@@ -62,7 +62,7 @@ To ensure robust security and prevent unhandled server failures:
 
 ---
 
-## 🚀 How to Run and Verify the Lab API
+##  How to Run and Verify the Lab API
 
 ### 1. Prerequisites
 * Python 3.10+
@@ -93,7 +93,7 @@ python -m pytest -v
 
 ---
 
-## 🧪 Test Coverage Breakdown
+##  Test Coverage Breakdown
 
 The test suite in [`tests/test_api.py`](./tests/test_api.py) executes 18 automated tests:
 
